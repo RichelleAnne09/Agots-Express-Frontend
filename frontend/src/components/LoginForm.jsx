@@ -1,48 +1,47 @@
 import { useState } from "react";
 
 const LoginForm = ({
-  loginEmail,
-  setLoginEmail,
+  loginUsername,
+  setLoginUsername,
   loginPassword,
   setLoginPassword,
+  handleLogin,
 }) => {
-  const [showLoginPassword, setShowLoginPassword] = useState(false);
-
-  const handleLogin = (e) => {
-    e.preventDefault();
-    console.log({ Username: loginEmail, password: loginPassword });
-  };
+  // ✅ State for show/hide password
+  const [showPassword, setShowPassword] = useState(false);
 
   return (
-    <form onSubmit={handleLogin} className="space-y-3 sm:space-y-4">
+    <form onSubmit={handleLogin} className="space-y-4">
+      {/* Username */}
       <div>
-        <label className="block text-gray-700 mb-1 text-sm sm:text-base">
-          Username:
-        </label>
+        <label className="block text-gray-700 mb-1 text-sm">Username:</label>
         <input
           type="text"
-          placeholder="Sample01"
-          value={loginEmail}
-          onChange={(e) => setLoginEmail(e.target.value)}
-          className="w-full border border-gray-300 rounded-md p-2 text-sm sm:text-base"
+          placeholder="Enter username"
+          value={loginUsername}
+          onChange={(e) => setLoginUsername(e.target.value)}
+          className="w-full border border-gray-300 rounded-md p-2 text-sm"
           required
         />
       </div>
+
+      {/* Password with show/hide */}
       <div className="relative">
-        <label className="block text-gray-700 mb-1 text-sm sm:text-base">
-          Password:
-        </label>
+        <label className="block text-gray-700 mb-1 text-sm">Password:</label>
+
         <input
-          type={showLoginPassword ? "text" : "password"}
+          type={showPassword ? "text" : "password"}
           placeholder="********"
           value={loginPassword}
           onChange={(e) => setLoginPassword(e.target.value)}
-          className="w-full border border-gray-300 rounded-md p-2 pr-10 text-sm sm:text-base"
+          className="w-full border border-gray-300 rounded-md p-2 text-sm pr-10"
           required
         />
+
+        {/* 👁️ Show/Hide Password Button (same as your sample) */}
         <button
           type="button"
-          onClick={() => setShowLoginPassword(!showLoginPassword)}
+          onClick={() => setShowPassword(!showPassword)}
           className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 hover:text-gray-700 mt-6"
         >
           <svg
@@ -53,8 +52,9 @@ const LoginForm = ({
             stroke="currentColor"
             strokeWidth={2}
           >
-            {showLoginPassword ? (
+            {showPassword ? (
               <>
+                {/* Eye open */}
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -68,6 +68,7 @@ const LoginForm = ({
               </>
             ) : (
               <>
+                {/* Eye closed */}
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -88,9 +89,11 @@ const LoginForm = ({
           </svg>
         </button>
       </div>
+
+      {/* Submit */}
       <button
         type="submit"
-        className="w-full bg-yellow-400 hover:bg-yellow-500 text-white font-semibold py-2 rounded-md flex items-center justify-center gap-2 text-sm sm:text-base"
+        className="w-full bg-yellow-400 hover:bg-yellow-500 text-white font-semibold py-2 rounded-md text-sm"
       >
         Login
       </button>

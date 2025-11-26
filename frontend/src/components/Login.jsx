@@ -1,13 +1,17 @@
 import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import LoginForm from "./LoginForm";
 import SignupForm from "./SignupForm";
 
 const Login = () => {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("login");
 
-  const [loginEmail, setLoginEmail] = useState("");
+  // LOGIN FIELDS
+  const [loginUsername, setLoginUsername] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
 
+  // SIGNUP FIELDS
   const [signupName, setSignupName] = useState("");
   const [signupEmail, setSignupEmail] = useState("");
   const [signupPhone, setSignupPhone] = useState("");
@@ -15,17 +19,53 @@ const Login = () => {
   const [signupPassword, setSignupPassword] = useState("");
   const [signupConfirmPassword, setSignupConfirmPassword] = useState("");
 
+  // ✅ LOGIN HANDLER FUNCTION
+  const handleLogin = async (e) => {
+    e.preventDefault();
+
+    try {
+      const res = await fetch("http://localhost:5000/admin/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({
+          username: loginUsername,
+          password: loginPassword,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        alert(data.message || "Login failed");
+        return;
+      }
+
+      // Save token if your backend returns one
+      if (data.token) localStorage.setItem("token", data.token);
+
+      alert("Login Successful!");
+
+      // 🔥 Redirect to admin dashboard
+      navigate("/admin-dashboard");
+    } catch (err) {
+      console.error("Login error:", err);
+      alert("Failed to connect to the server.");
+    }
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-[#323C4D] to-[#0F2247] px-4 sm:px-6">
       <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6 lg:p-8 w-full max-w-sm sm:max-w-md lg:max-w-lg shadow-2xl">
+        {/* Logo */}
         <div className="flex justify-center mb-4 sm:mb-6">
           <div className="bg-yellow-400 rounded-full p-3 sm:p-4">
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              width="200"
-              height="200"
+              width="64"
+              height="64"
               viewBox="0 0 64 64"
-              className="w-10 h-10 cursor-pointer transition-all duration-10 hover:animate-pulse"
+              className="w-10 h-10 cursor-pointer transition-all duration-100 hover:animate-pulse"
             >
               <path
                 fill="#000000"
@@ -34,6 +74,7 @@ const Login = () => {
             </svg>
           </div>
         </div>
+
         <h1 className="text-xl sm:text-2xl font-semibold text-center text-gray-900">
           Agot's Express
         </h1>
@@ -41,6 +82,7 @@ const Login = () => {
           Authentic Filipino Cuisine
         </p>
 
+        {/* Tabs */}
         <div className="flex justify-center mb-4 sm:mb-6 border-b border-gray-200">
           <button
             onClick={() => setActiveTab("login")}
@@ -64,20 +106,25 @@ const Login = () => {
           </button>
         </div>
 
+        {/* Form Slide */}
         <div className="overflow-hidden">
           <div
             className={`flex transition-transform duration-500 ${
               activeTab === "login" ? "translate-x-0" : "-translate-x-full"
             }`}
           >
+            {/* LOGIN FORM */}
             <div className="w-full flex-shrink-0">
               <LoginForm
-                loginEmail={loginEmail}
-                setLoginEmail={setLoginEmail}
+                loginUsername={loginUsername}
+                setLoginUsername={setLoginUsername}
                 loginPassword={loginPassword}
                 setLoginPassword={setLoginPassword}
+                handleLogin={handleLogin}
               />
             </div>
+
+            {/* SIGNUP FORM */}
             <div className="w-full flex-shrink-0">
               <SignupForm
                 signupName={signupName}
@@ -96,10 +143,11 @@ const Login = () => {
             </div>
           </div>
         </div>
+
         <div className="text-center mt-4">
-          <a href="/" className="text-gray-700 hover:text-gray-900 text-sm">
+          <Link to="/" className="text-gray-700 hover:text-gray-900 text-sm">
             Back to Home
-          </a>
+          </Link>
         </div>
       </div>
     </div>
