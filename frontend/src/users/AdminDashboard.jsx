@@ -1,4 +1,6 @@
 import { MessageSquare, ShoppingCart, TrendingUp, Users } from "lucide-react";
+import { useEffect, useState } from "react";
+import { fetchStats } from "../api/StatsAPI.js"; // API endpoint to get stats
 import { DashboardHeader } from "../ui/DashboardHeader";
 import { DashboardSidebar } from "../ui/DashboardSidebar";
 import { OrdersChart } from "../ui/OrdersChart";
@@ -7,20 +9,34 @@ import { SalesChart } from "../ui/SalesChart";
 import { StatsCard } from "../ui/StatsCard";
 
 const AdminDashboard = () => {
+  const [stats, setStats] = useState({
+    totalOrders: 0,
+    totalCustomers: 0,
+    totalRevenue: 0,
+    averageFeedback: 0,
+  });
+
+  useEffect(() => {
+    const getStats = async () => {
+      try {
+        const data = await fetchStats(); // fetch from backend
+        setStats(data);
+      } catch (err) {
+        console.error("Failed to fetch stats:", err);
+      }
+    };
+    getStats();
+  }, []);
+
   return (
     <div className="min-h-screen bg-[#F4F6F9]">
-      {/* Sidebar */}
       <DashboardSidebar />
 
-      {/* Main Content */}
       <div className="pl-64 transition-all duration-300">
-        {/* Header */}
         <DashboardHeader />
 
-        {/* Page Content */}
         <main className="p-6 space-y-6">
           {/* Page Title */}
-
           <div className="mb-10">
             <h1 className="text-3xl font-bold text-gray-900 mb-1">
               Dashboard Overview
@@ -34,7 +50,7 @@ const AdminDashboard = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <StatsCard
               title="Total Orders"
-              value="248"
+              value={stats.totalOrders}
               change="+12% from yesterday"
               changeType="positive"
               icon={ShoppingCart}
@@ -42,7 +58,7 @@ const AdminDashboard = () => {
             />
             <StatsCard
               title="Customers"
-              value="1,284"
+              value={stats.totalCustomers}
               change="+8% from last week"
               changeType="positive"
               icon={Users}
@@ -50,7 +66,7 @@ const AdminDashboard = () => {
             />
             <StatsCard
               title="Revenue"
-              value="₱38,500"
+              value={`₱${stats.totalRevenue}`}
               change="+23% from yesterday"
               changeType="positive"
               icon={TrendingUp}
@@ -58,7 +74,7 @@ const AdminDashboard = () => {
             />
             <StatsCard
               title="Feedback"
-              value="4.8"
+              value={stats.averageFeedback}
               change="96% satisfaction"
               changeType="neutral"
               icon={MessageSquare}
@@ -72,7 +88,6 @@ const AdminDashboard = () => {
             <OrdersChart />
           </div>
 
-          {/* Recent Orders Table */}
           <RecentOrders />
         </main>
       </div>
