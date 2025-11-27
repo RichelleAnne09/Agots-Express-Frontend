@@ -1,32 +1,9 @@
-export const RecentOrders = () => {
-  const orders = [
-    {
-      id: "#1234",
-      name: "John Doe",
-      items: "Adobo Combo, Sinigang",
-      status: "completed",
-      price: "₱850",
-    },
-    {
-      id: "#1235",
-      name: "Maria Santos",
-      items: "Lechon Kawali, Rice",
-      status: "preparing",
-      price: "₱450",
-    },
-    {
-      id: "#1236",
-      name: "Pedro Cruz",
-      items: "Catering Package",
-      status: "pending",
-      price: "₱15,000",
-    },
-  ];
-
+export const RecentOrders = ({ orders }) => {
   const variants = {
     completed: "bg-green-500 text-white",
     preparing: "bg-orange-500 text-white",
     pending: "bg-gray-100 text-gray-700 border border-gray-300",
+    cancelled: "bg-red-500 text-white",
   };
 
   return (
@@ -50,13 +27,13 @@ export const RecentOrders = () => {
                 className="border-b border-gray-200 last:border-none hover:bg-gray-50/40 transition-colors"
               >
                 <td className="px-6 py-4 text-center font-bold align-middle">
-                  {order.id}
+                  #{order.id}
                 </td>
                 <td className="px-6 py-4 text-center align-middle">
-                  {order.name}
+                  {order.customer_name}
                 </td>
                 <td className="px-6 py-4 text-center text-gray-500 text-sm align-middle">
-                  {order.items}
+                  {order.items || "N/A"}
                 </td>
                 <td className="px-6 py-4 text-center align-middle">
                   <span
@@ -68,7 +45,7 @@ export const RecentOrders = () => {
                   </span>
                 </td>
                 <td className="px-6 py-4 text-center font-bold text-yellow-600 align-middle">
-                  {order.price}
+                  ₱{order.total_amount}
                 </td>
               </tr>
             ))}

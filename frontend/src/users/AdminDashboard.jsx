@@ -1,12 +1,13 @@
 import { MessageSquare, ShoppingCart, TrendingUp, Users } from "lucide-react";
 import { useEffect, useState } from "react";
-import { fetchStats } from "../api/StatsAPI.js"; // API endpoint to get stats
+import { fetchStats, fetchRecentOrders } from "../api/StatsAPI.js";
 import { DashboardHeader } from "../ui/DashboardHeader";
 import { DashboardSidebar } from "../ui/DashboardSidebar";
 import { OrdersChart } from "../ui/OrdersChart";
-import { RecentOrders } from "../ui/RecentOrders";
 import { SalesChart } from "../ui/SalesChart";
 import { StatsCard } from "../ui/StatsCard";
+
+import { RecentOrders } from "../ui/RecentOrders";
 
 const AdminDashboard = () => {
   const [stats, setStats] = useState({
@@ -16,22 +17,26 @@ const AdminDashboard = () => {
     averageFeedback: 0,
   });
 
+  const [recentOrders, setRecentOrders] = useState([]);
+
   useEffect(() => {
-    const getStats = async () => {
+    const loadDashboard = async () => {
       try {
-        const data = await fetchStats(); // fetch from backend
-        setStats(data);
+        const statsData = await fetchStats();
+        setStats(statsData);
+
+        const ordersData = await fetchRecentOrders();
+        setRecentOrders(ordersData);
       } catch (err) {
-        console.error("Failed to fetch stats:", err);
+        console.error("Failed to fetch dashboard data:", err);
       }
     };
-    getStats();
+    loadDashboard();
   }, []);
 
   return (
     <div className="min-h-screen bg-[#F4F6F9]">
       <DashboardSidebar />
-
       <div className="pl-64 transition-all duration-300">
         <DashboardHeader />
 
@@ -88,7 +93,8 @@ const AdminDashboard = () => {
             <OrdersChart />
           </div>
 
-          <RecentOrders />
+          {/* Recent Orders Table */}
+          <RecentOrders orders={recentOrders} />
         </main>
       </div>
     </div>

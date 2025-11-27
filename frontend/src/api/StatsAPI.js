@@ -1,17 +1,14 @@
-// src/api/StatsAPI.js
+// api/StatsAPI.js
 import axios from "axios";
 
+// Fetch dashboard stats
 export const fetchStats = async () => {
-  try {
-    const res = await axios.get("http://localhost:5000/dashboard/stats");
-    return res.data; // return the object directly
-  } catch (err) {
-    console.error("Failed to fetch stats:", err);
-    return {
-      totalOrders: 0,
-      totalCustomers: 0,
-      totalRevenue: 0,
-      averageFeedback: 0,
-    };
-  }
+  const res = await axios.get("http://localhost:5000/dashboard/stats");
+  return res.data;
+};
+
+// Fetch recent orders
+export const fetchRecentOrders = async () => {
+  const res = await axios.get("http://localhost:5000/dashboard/recent-orders");
+  return res.data;
 };
